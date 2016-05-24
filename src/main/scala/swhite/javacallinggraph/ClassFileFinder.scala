@@ -1,3 +1,5 @@
+package swhite.javacallinggraph
+
 import java.io.File
 
 class ClassFileFinder {
@@ -5,7 +7,7 @@ class ClassFileFinder {
     val children = new Iterable[File] {
       def iterator = if (file.isDirectory) file.listFiles.iterator else Iterator.empty
     }
-    Seq(file) ++: children.flatMap(walkTree(_)).filter(f => f.getName.endsWith(".class"))
+    Seq(file) ++: children.flatMap(walkTree).filter(f => f.getName.endsWith(".class"))
   }
 }
 
