@@ -2,7 +2,7 @@ package swhite.javacallinggraph
 
 import java.io.File
 
-class ClassProfile(val className: String, val packageName: String) {
+class ClassProfile(val className: String, val packageName: String, calledMethods: List[CalledMethod]) {
 
 
 object ClassProfile {

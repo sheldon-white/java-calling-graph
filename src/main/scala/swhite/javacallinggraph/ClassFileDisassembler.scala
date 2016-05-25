@@ -12,22 +12,18 @@ class ClassFileDisassembler {
   def extractMetadata(classfile: File) = {
     val parser = new ClassParser(new FileInputStream(classfile), classfile.getName)
     val javaClass = parser.parse()
-    val classProfile = new ClassProfile(javaClass.getClassName, javaClass.getPackageName)
-
     val javapLines = Process(javap + " -c " + classfile).lineStream.filter(l => l.contains("invoke"))
 
-    for (l <- javapLines) {
-      //println(l)
+    val calledMethods: List[CalledMethod] = javapLines.map(l =>
       l match {
-        case ClassFileDisassembler.invokeVirtualPattern(null, function) => println("invokevirtual1!!!!!!!!!!!!!!!!!!!!! = %s".format(function))
-        case ClassFileDisassembler.invokeVirtualPattern(classname, function) => println("invokevirtual2 = %s, %s".format(classname, function))
-        case ClassFileDisassembler.invokeStaticPattern(null, function) => println("invokestatic1 = %s".format(function))
-        case ClassFileDisassembler.invokeStaticPattern(classname, function) => println("invokestatic2 = %s, %s".format(classname, function))
-        case _ => println(l)
-      }
-    }
+          case ClassFileDisassembler.invokeVirtualPattern(null, function) => Option(new CalledMethod(function, javaClass.getClassName))
+          case ClassFileDisassembler.invokeVirtualPattern(classname, function) => Option(new CalledMethod(function, classname))
+          case ClassFileDisassembler.invokeStaticPattern(null, function) =>  Option(new CalledMethod(function, javaClass.getClassName))
+          case ClassFileDisassembler.invokeStaticPattern(classname, function) => Option(new CalledMethod(function, classname))
+          case _ => None
+      }).toList.flatten
 
-    classProfile
+    new ClassProfile(javaClass.getClassName, javaClass.getPackageName, calledMethods)
   }
 }
 
@@ -40,8 +36,5 @@ object ClassFileDisassembler {
     val disassembler = new ClassFileDisassembler()
     val classProfile = disassembler.extractMetadata(classfile)
     println(classProfile.packageName)
-    //    for (f <- disassembler.runJavap(classfile)) {
-    //      println(f)
-    //    }
   }
 }
