@@ -17,13 +17,17 @@ class ClassFileDisassembler {
     val calledMethods: List[CalledMethod] = javapLines.map(l =>
       l match {
           case ClassFileDisassembler.invokeVirtualPattern(null, function) => Option(new CalledMethod(function, javaClass.getClassName))
-          case ClassFileDisassembler.invokeVirtualPattern(classname, function) => Option(new CalledMethod(function, classname))
-          case ClassFileDisassembler.invokeStaticPattern(null, function) =>  Option(new CalledMethod(function, javaClass.getClassName))
-          case ClassFileDisassembler.invokeStaticPattern(classname, function) => Option(new CalledMethod(function, classname))
+          case ClassFileDisassembler.invokeVirtualPattern(classname, function) => Option(new CalledMethod(function, normalizeClassname(classname)))
+          case ClassFileDisassembler.invokeStaticPattern(null, function) => Option(new CalledMethod(function, javaClass.getClassName))
+          case ClassFileDisassembler.invokeStaticPattern(classname, function) => Option(new CalledMethod(function, normalizeClassname(classname)))
           case _ => None
       }).toList.flatten
 
     new ClassProfile(javaClass.getClassName, javaClass.getPackageName, calledMethods)
+  }
+
+  private def normalizeClassname(className: String) = {
+    className.replaceAll("[\\/\\$]", ".").dropRight(1)
   }
 }
 
@@ -35,6 +39,6 @@ object ClassFileDisassembler {
     val classfile = new File("/Users/swhite/projects/app-core/dev2/target/test-classes/com/navigo/unittest/UserAutoProvisioningTest.class")
     val disassembler = new ClassFileDisassembler()
     val classProfile = disassembler.extractMetadata(classfile)
-    println(classProfile.packageName)
+    println(classProfile.packageName, classProfile.className)
   }
 }
