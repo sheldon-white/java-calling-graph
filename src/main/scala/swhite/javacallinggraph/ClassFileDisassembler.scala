@@ -13,8 +13,8 @@ class ClassFileDisassembler {
     val parser = new ClassParser(new FileInputStream(classfile), classfile.getName)
     val javaClass = parser.parse()
     val javapLines = Process(javap + " -c " + classfile).lineStream.filter(l => l.contains("invoke"))
-
-    val calledMethods: List[CalledMethod] = javapLines.map(l =>
+    println(s"processing '$classfile'")
+    val calledMethods = javapLines.map(l =>
       l match {
           case ClassFileDisassembler.invokeVirtualPattern(null, function) => Option(new CalledMethod(function, javaClass.getClassName))
           case ClassFileDisassembler.invokeVirtualPattern(classname, function) => Option(new CalledMethod(function, normalizeClassname(classname)))
@@ -39,6 +39,6 @@ object ClassFileDisassembler {
     val classfile = new File("/Users/swhite/projects/app-core/dev2/target/test-classes/com/navigo/unittest/UserAutoProvisioningTest.class")
     val disassembler = new ClassFileDisassembler()
     val classProfile = disassembler.extractMetadata(classfile)
-    println(classProfile.packageName, classProfile.className)
+    //println(classProfile.packageName, classProfile.className)
   }
 }
