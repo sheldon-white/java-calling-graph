@@ -1,4 +1,4 @@
-name := "java-calling-graph"
+name := "project-analytics"
 
 version := "1.0"
 
@@ -23,6 +23,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-iteratees" % playVersion,
   "com.typesafe.play.extras" %% "iteratees-extras" % "1.5.0",
   "org.scala-lang.modules" %% "scala-async" % "0.9.2",
+  "joda-time" % "joda-time" % "2.9.4",
   "org.anormcypher" %% "anormcypher" % "0.9.1"
 )
 
