@@ -15,7 +15,6 @@ class GitHistoryExtractor(repoDir: String) {
   var commitDate: DateTime = null
   var lineCountsSeen = false
   var deltaLineCount = 0
-  val commits = ArrayBuffer.empty[GitCommit]
   val dateFormatter = DateTimeFormat.forPattern("EEE MMM dd HH:mm:ss yyyy Z")
 
   implicit def str2date(str: String): DateTime = dateFormatter.parseDateTime(str)
@@ -26,50 +25,51 @@ class GitHistoryExtractor(repoDir: String) {
     val fileSubpath = repoPath.relativize(filePath)
     val gitCmd = git + " --git-dir=" + repoDir + "/.git --no-pager log --follow -p -- " + fileSubpath
     //println(gitCmd)
+    val commits = ArrayBuffer.empty[GitCommit]
+
     try {
       val gitOutput = Process(gitCmd).lineStream
-      println(s"processing '$file'")
-
       gitOutput.foreach(l =>
         l match {
-          case GitHistoryExtractor.authorPattern(author) => {
+          case GitHistoryExtractor.authorPattern(author) =>
             commitAuthor = author
-            attemptBuildCommit(file.getAbsolutePath, commitAuthor, commitDate, deltaLineCount) match {
+            attemptBuildCommit(fileSubpath.toString, commitAuthor, commitDate, deltaLineCount) match {
               case Some(c) =>
                 commits += c
-                resetState
+                resetState()
               case None =>
             }
-          }
-          case GitHistoryExtractor.datePattern(dateStr) => {
+
+          case GitHistoryExtractor.datePattern(dateStr) =>
             commitDate = dateStr
-            attemptBuildCommit(file.getAbsolutePath, commitAuthor, commitDate, deltaLineCount) match {
+            attemptBuildCommit(fileSubpath.toString, commitAuthor, commitDate, deltaLineCount) match {
               case Some(c) =>
                 commits += c
-                resetState
+                resetState()
               case None =>
             }
-          }
-          case GitHistoryExtractor.linesAddedDeletedPattern(linesDeleted, linesAdded) => {
+
+          case GitHistoryExtractor.linesAddedDeletedPattern(linesDeleted, linesAdded) =>
             deltaLineCount = linesAdded.toInt - linesDeleted.toInt
             lineCountsSeen = true
-            attemptBuildCommit(file.getAbsolutePath, commitAuthor, commitDate, deltaLineCount) match {
+            attemptBuildCommit(fileSubpath.toString, commitAuthor, commitDate, deltaLineCount) match {
               case Some(c) =>
                 commits += c
-                resetState
+                resetState()
               case None =>
             }
-          }
+
           case _ =>
         })
     } catch {
       case e: Throwable => Console.err.println(e)
     }
+    println(s"found ${commits.size} commits for $fileSubpath")
 
     commits
   }
 
-  def resetState = {
+  def resetState() = {
     commitAuthor = null
     commitDate = null
     lineCountsSeen = false
@@ -81,7 +81,7 @@ class GitHistoryExtractor(repoDir: String) {
                          commitDate: DateTime,
                          deltaLineCount: Int): Option[GitCommit] = {
     if (commitAuthor != null && commitDate != null && lineCountsSeen) {
-      println(filename, commitAuthor, commitDate)
+      // println(filename, commitAuthor, commitDate)
       Some(new GitCommit(filename, commitAuthor, commitDate, deltaLineCount))
     } else {
       None
@@ -92,12 +92,11 @@ class GitHistoryExtractor(repoDir: String) {
 object GitHistoryExtractor {
   val authorPattern = "^Author:.+<([^>]+)>$".r
   val datePattern = "^Date:\\s+(.+)$".r
-  val linesAddedDeletedPattern = "^@@ \\-(?:\\d+),(\\d+) \\+(?:\\d+),(\\d+) @@ .+$".r
+  val linesAddedDeletedPattern = "^@@ \\-(?:\\d+),(\\d+) \\+(?:\\d+),(\\d+) @@.*$".r
 
   def main(args: Array[String]) = {
     val repoDir = "/Users/swhite/projects/app-core"
     val extractor = new GitHistoryExtractor(repoDir)
-    extractor.extractCommits(new File("/Users/swhite/projects/app-core/Vagrantfile"))
-    //println(classProfile.packageName, classProfile.className)
+    val commits = extractor.extractCommits(new File("/Users/swhite/projects/app-core/dev2/pom.xml"))
   }
 }

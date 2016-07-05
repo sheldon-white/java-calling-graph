@@ -19,9 +19,12 @@ object DirectoryIterator {
     def isFile(file: File) = file.isFile
     val dir = new File("/Users/swhite/projects/app-core")
     val finder = new DirectoryIterator
+    var count = 0
     for (f <- finder.walkTree(dir, isFile)) {
       println(f.getName)
+      count += 1
     }
+    println(s"found $count files")
   }
 }
 
