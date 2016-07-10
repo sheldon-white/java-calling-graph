@@ -5,7 +5,7 @@ import net.fwbrasil.activate.storage.relational.PooledJdbcRelationalStorage
 import net.fwbrasil.activate.storage.relational.idiom.mySqlDialect
 
 // Initially, must be created the persistence context. It must be a singleton, so it makes sense to declare as "object".
-object projectContext extends ActivateContext {
+object ProjectContext extends ActivateContext {
 
   val storage = new PooledJdbcRelationalStorage {
     val jdbcDriver = "com.mysql.jdbc.Driver"

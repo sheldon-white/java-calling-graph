@@ -3,7 +3,7 @@ package swhite.projectanalytics.activate
 import java.util.Date
 
 import net.fwbrasil.activate.migration.Migration
-import projectContext._
+import ProjectContext._
 
 class CreateSchemaMigration extends Migration {
 

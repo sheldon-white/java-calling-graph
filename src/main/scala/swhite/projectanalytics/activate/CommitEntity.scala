@@ -1,6 +1,6 @@
 package swhite.projectanalytics.activate
 
-import swhite.projectanalytics.activate.projectContext._
+import swhite.projectanalytics.activate.ProjectContext._
 
 trait CommitEntity extends Entity {
   var filename: String

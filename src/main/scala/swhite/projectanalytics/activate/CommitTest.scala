@@ -1,12 +1,12 @@
 package swhite.projectanalytics.activate
 
 import swhite.projectanalytics.githistory.CommitData
-import swhite.projectanalytics.activate.projectContext._
+import swhite.projectanalytics.activate.ProjectContext._
 import net.fwbrasil.radon.transaction.Transaction
 import java.util.Date
 
 
-object CommitTestMain extends App {
+object CommitTest extends App {
 
   // Use whenever entities within transactions
   // It is not necessary to call a method like "store" or "save" to add the entity.

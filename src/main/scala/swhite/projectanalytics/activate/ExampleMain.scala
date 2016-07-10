@@ -1,6 +1,6 @@
 package swhite.projectanalytics.activate
 
-import swhite.projectanalytics.activate.projectContext._
+import swhite.projectanalytics.activate.ProjectContext._
 import net.fwbrasil.radon.transaction.Transaction
 
 //// An entity shall extend the trait "Entity"
