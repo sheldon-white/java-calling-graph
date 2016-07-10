@@ -24,6 +24,10 @@ libraryDependencies ++= Seq(
   "com.typesafe.play.extras" %% "iteratees-extras" % "1.5.0",
   "org.scala-lang.modules" %% "scala-async" % "0.9.2",
   "joda-time" % "joda-time" % "2.9.4",
+  "net.fwbrasil" % "activate-core_2.11" % "1.7",
+ // "net.fwbrasil" % "activate-jdbc_2.11" % "1.7",
+  "net.fwbrasil" %% "activate-jdbc" % "1.7",
+  "mysql" % "mysql-connector-java" % "6.0.3",
   "org.anormcypher" %% "anormcypher" % "0.9.1"
 )
 

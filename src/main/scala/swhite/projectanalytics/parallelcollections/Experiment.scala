@@ -14,10 +14,10 @@ object ParallelExperiment {
     var t1 = System.currentTimeMillis()
     SequentialImplementation.compute(list)
     var t2 = System.currentTimeMillis()
-    println("Sequential " + (t2 - t1) + " (ms)")
+    Console.err.println("Sequential " + (t2 - t1) + " (ms)")
     t1 = System.currentTimeMillis()
     ParallelImplementation.compute(list)
     t2 = System.currentTimeMillis()
-    println("Parallel " + (t2 - t1) + " (ms)")
+    Console.err.println("Parallel " + (t2 - t1) + " (ms)")
   }
 }

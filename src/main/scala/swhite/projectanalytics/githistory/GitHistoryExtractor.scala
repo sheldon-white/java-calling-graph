@@ -19,13 +19,13 @@ class GitHistoryExtractor(repoDir: String) {
 
   implicit def str2date(str: String): DateTime = dateFormatter.parseDateTime(str)
 
-  def extractCommits(file: File): ArrayBuffer[GitCommit] = {
+  def extractCommits(file: File): ArrayBuffer[CommitData] = {
     val repoPath = Paths.get(repoDir)
     val filePath = Paths.get(file.getAbsolutePath)
     val fileSubpath = repoPath.relativize(filePath)
     val gitCmd = git + " --git-dir=" + repoDir + "/.git --no-pager log --follow -p -- " + fileSubpath
     //println(gitCmd)
-    val commits = ArrayBuffer.empty[GitCommit]
+    val commits = ArrayBuffer.empty[CommitData]
 
     try {
       val gitOutput = Process(gitCmd).lineStream
@@ -79,10 +79,10 @@ class GitHistoryExtractor(repoDir: String) {
   def attemptBuildCommit(filename: String,
                          commitAuthor: String,
                          commitDate: DateTime,
-                         deltaLineCount: Int): Option[GitCommit] = {
+                         deltaLineCount: Int): Option[CommitData] = {
     if (commitAuthor != null && commitDate != null && lineCountsSeen) {
       // println(filename, commitAuthor, commitDate)
-      Some(new GitCommit(filename, commitAuthor, commitDate, deltaLineCount))
+      Some(new CommitData(filename, commitAuthor, deltaLineCount, commitDate.toDate))
     } else {
       None
     }

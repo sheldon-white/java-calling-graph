@@ -19,12 +19,17 @@ object DirectoryIterator {
     def isFile(file: File) = file.isFile
     val dir = new File("/Users/swhite/projects/app-core")
     val finder = new DirectoryIterator
-    var count = 0
+    val t1 = System.currentTimeMillis()
     for (f <- finder.walkTree(dir, isFile)) {
-      println(f.getName)
-      count += 1
+      println(f.getName, f.length())
     }
-    println(s"found $count files")
+    val t2 = System.currentTimeMillis()
+    println("Sequential " + (t2 - t1) + " (ms)")
+    //Thread.sleep(5000)
+    val finder2 = new DirectoryIterator
+    finder2.walkTree(dir, isFile).par.foreach(f => println(f.getName(), f.length()))
+    val t3 = System.currentTimeMillis()
+    println("Parallel " + (t3 - t2) + " (ms)")
   }
 }
 
