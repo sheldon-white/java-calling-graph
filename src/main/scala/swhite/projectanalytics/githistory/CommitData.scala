@@ -2,11 +2,12 @@ package swhite.projectanalytics.githistory
 
 import java.util.Date
 
-class CommitData(var filename: String,
-                 var authorEmail: String,
-                 var linesAdded: Int,
-                 var commitDate: Date) {
+class CommitData(val commitID: String,
+                 val filename: String,
+                 val authorEmail: String,
+                 val linesAdded: Int,
+                 val commitDate: Date) {
   override def toString = {
-    filename + ": " + authorEmail + ", " + commitDate + ", " + linesAdded
+    commitID + " - " + filename + ": " + authorEmail + ", " + commitDate + ", " + linesAdded
   }
 }

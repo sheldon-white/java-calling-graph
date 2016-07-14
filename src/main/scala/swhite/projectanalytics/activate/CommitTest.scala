@@ -12,7 +12,7 @@ object CommitTest extends App {
   // It is not necessary to call a method like "store" or "save" to add the entity.
   // Just create, use, and it will be persisted.
   transactional {
-    val commitData = new CommitData("foo.java", "bill@ding.com", 123, new Date())
+    val commitData = new CommitData("kjbdkjbsdcbs", "foo.java", "bill@ding.com", 123, new Date())
     val commitRecord = new GitCommitRecord(commitData)
     commitRecord.filename = "baz.js"
     println(commitRecord.filename)
@@ -48,13 +48,13 @@ object CommitTest extends App {
   // But you can control the transaction as follows
   val transaction = new Transaction
   transactional(transaction) {
-    new GitCommitRecord("foo.java", "fred@flintstone.com", 456, new Date())
+    new GitCommitRecord("dnjsndckjsnd", "foo.java", "fred@flintstone.com", 456, new Date())
   }
   transaction.commit
 
   // Defining the propagation of the transaction
   transactional {
-    val commitRecord = new GitCommitRecord("foo.java", "fred@flintstone.com", -123, new Date())
+    val commitRecord = new GitCommitRecord("jnkvknsdvkn", "foo.java", "fred@flintstone.com", -123, new Date())
     transactional(mandatory) {
       commitRecord.filename = "baz2.js"
     }
@@ -63,7 +63,7 @@ object CommitTest extends App {
 
   // Nested transactions are a type of propagation
   transactional {
-    val commitRecord = new GitCommitRecord("foo.java", "fred@flintstone.com", 192, new Date())
+    val commitRecord = new GitCommitRecord("nknerfvndfkv", "foo.java", "fred@flintstone.com", 192, new Date())
     transactional(nested) {
       commitRecord.filename = "baz3.js"
     }

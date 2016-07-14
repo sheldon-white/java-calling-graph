@@ -9,9 +9,9 @@ object ProjectContext extends ActivateContext {
 
   val storage = new PooledJdbcRelationalStorage {
     val jdbcDriver = "com.mysql.jdbc.Driver"
-    val user = Some("swhite")
-    val password = Some("swhite")
-    val url = "jdbc:mysql://192.168.99.101:32771/test"
+    val user = Some("root")
+    val password = None
+    val url = "jdbc:mysql://192.168.99.100:32779/test"
     val dialect = mySqlDialect
   }
 }

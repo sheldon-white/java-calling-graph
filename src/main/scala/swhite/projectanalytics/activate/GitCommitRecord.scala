@@ -3,12 +3,13 @@ package swhite.projectanalytics.activate
 import java.util.Date
 import swhite.projectanalytics.githistory.CommitData
 
-class GitCommitRecord(var filename: String,
+class GitCommitRecord(var commitID: String,
+                      var filename: String,
                       var authorEmail: String,
                       var linesAdded: Int,
                       var commitDate: Date) extends CommitEntity {
 
   def this(commitData: CommitData) {
-    this(commitData.filename, commitData.authorEmail, commitData.linesAdded, commitData.commitDate)
+    this(commitData.commitID, commitData.filename, commitData.authorEmail, commitData.linesAdded, commitData.commitDate)
   }
 }
