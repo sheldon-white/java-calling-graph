@@ -96,6 +96,7 @@ class GitHistoryExtractor(repoDir: String) {
       //printStats
       Some(new CommitData(commitID, filename, commitAuthor, deltaLineCount, commitDate.toDate))
     } else {
+      Console.err.println(s"commit $commitID was unterminated!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
       None
     }
   }
