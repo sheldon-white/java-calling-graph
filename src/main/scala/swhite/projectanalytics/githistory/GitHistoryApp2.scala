@@ -28,6 +28,6 @@ object GitHistoryApp2 {
     } catch {
       case e: Exception => println(e)
     }
-    System.exit(0)
+   // System.exit(0)
   }
 }

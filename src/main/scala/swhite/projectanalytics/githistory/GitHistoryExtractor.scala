@@ -26,13 +26,13 @@ class GitHistoryExtractor(repoDir: String) {
       case false => file.getName
     }
     val pwd = new File(".").getAbsolutePath
-    val gitCmd = s"sh $pwd/bin/run-git.sh $repoDir"
+    val gitCmd = s"sh $pwd/bin/run-git.sh $repoDir $file"
 
     try {
       gitCmd.lineStream.foreach(l =>
         l match {
           case GitHistoryExtractor.commitIDPattern(id) =>
-            if (commitID != null) {
+            if (commitID != null && filename != null) {
               // finish current commit
               attemptBuildCommit(commitID, filename, commitAuthor, commitDate, deltaLineCount) match {
                 case Some(c) =>
@@ -44,14 +44,16 @@ class GitHistoryExtractor(repoDir: String) {
             commitID = id
 
           case GitHistoryExtractor.filenamePattern(fn) =>
-            // finish current commit
-            attemptBuildCommit(commitID, filename, commitAuthor, commitDate, deltaLineCount) match {
-              case Some(c) =>
-                commitHandler(c)
-              case None =>
+            if (filename != null) {
+              // finish current commit
+              attemptBuildCommit(commitID, filename, commitAuthor, commitDate, deltaLineCount) match {
+                case Some(c) =>
+                  commitHandler(c)
+                case None =>
+              }
             }
-            deltaLineCount = 0
             filename = fn
+            deltaLineCount = 0
 
           case GitHistoryExtractor.authorPattern(author) =>
             commitAuthor = author
@@ -117,10 +119,10 @@ object GitHistoryExtractor {
 
   def main(args: Array[String]) = {
     val t1 = System.currentTimeMillis
-    val repoDir = "/Users/swhite/projects/app-core"
+    val repoDir = "/Users/swhite/projects/app-core/.git"
     val commitHandler: CommitData => Unit = println
     val extractor = new GitHistoryExtractor(repoDir)
-    extractor.extractCommits(new File("/Users/swhite/projects/app-core/dev2/web/accessToken.jsp"), true, commitHandler)
+    extractor.extractCommits(new File("dev2/src/com/navigo/smartsheet/sys/flow"), true, commitHandler)
     val t2 = System.currentTimeMillis
     println(s"elapsed time = ${t2 - t1} milliseconds")
   }
