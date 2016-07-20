@@ -7,9 +7,15 @@ class GitCommitRecord(var commitID: String,
                       var filename: String,
                       var authorEmail: String,
                       var linesAdded: Int,
+                      var linesDeleted: Int,
                       var commitDate: Date) extends CommitEntity {
 
   def this(commitData: CommitData) {
-    this(commitData.commitID, commitData.filename, commitData.authorEmail, commitData.linesAdded, commitData.commitDate)
+    this(commitData.commitID,
+         commitData.filename,
+         commitData.authorEmail,
+         commitData.linesAdded,
+         commitData.linesDeleted,
+         commitData.commitDate)
   }
 }

@@ -10,7 +10,7 @@ import swhite.projectanalytics.utils.DirectoryIterator
 
 import scala.collection.parallel._
 
-object GitHistoryApp2 {
+object ExtractHistoryFromRepo {
   def commitIt(commitData: CommitData) = {
     val transaction = new Transaction
     transactional(transaction) {

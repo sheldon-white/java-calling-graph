@@ -14,7 +14,8 @@ class GitHistoryExtractor(repoDir: String) {
   var commitAuthor: String = null
   var commitID: String = null
   var commitDate: DateTime = null
-  var deltaLineCount = 0
+  var linesAdded = 0
+  var linesDeleted = 0
   val dateFormatter = DateTimeFormat.forPattern("EEE MMM dd HH:mm:ss yyyy Z")
 
   implicit def str2date(str: String): DateTime = dateFormatter.parseDateTime(str)
@@ -29,12 +30,11 @@ class GitHistoryExtractor(repoDir: String) {
     val gitCmd = s"sh $pwd/bin/run-git.sh $repoDir $file"
 
     try {
-      gitCmd.lineStream.foreach(l =>
-        l match {
+      gitCmd.lineStream.foreach {
           case GitHistoryExtractor.commitIDPattern(id) =>
             if (commitID != null && filename != null) {
               // finish current commit
-              attemptBuildCommit(commitID, filename, commitAuthor, commitDate, deltaLineCount) match {
+              attemptBuildCommit(commitID, filename, commitAuthor, commitDate, linesAdded, linesDeleted) match {
                 case Some(c) =>
                   commitHandler(c)
                 case None =>
@@ -46,14 +46,15 @@ class GitHistoryExtractor(repoDir: String) {
           case GitHistoryExtractor.filenamePattern(fn) =>
             if (filename != null) {
               // finish current commit
-              attemptBuildCommit(commitID, filename, commitAuthor, commitDate, deltaLineCount) match {
+              attemptBuildCommit(commitID, filename, commitAuthor, commitDate, linesAdded, linesDeleted) match {
                 case Some(c) =>
                   commitHandler(c)
                 case None =>
               }
             }
             filename = fn
-            deltaLineCount = 0
+            linesAdded = 0
+            linesDeleted = 0
 
           case GitHistoryExtractor.authorPattern(author) =>
             commitAuthor = author
@@ -61,17 +62,18 @@ class GitHistoryExtractor(repoDir: String) {
           case GitHistoryExtractor.datePattern(dateStr) =>
             commitDate = dateStr
 
-          case GitHistoryExtractor.linesAddedDeletedPattern(linesDeleted, linesAdded) =>
-            deltaLineCount += linesAdded.toInt - linesDeleted.toInt
+          case GitHistoryExtractor.linesAddedDeletedPattern(ld, la) =>
+            linesAdded += la.toInt
+            linesDeleted += ld.toInt
 
           case _ =>
-        })
+        }
     } catch {
       case e: Throwable => Console.err.println(e)
     }
     if (commitID != null) {
       // finish current commit
-      attemptBuildCommit(commitID, filename, commitAuthor, commitDate, deltaLineCount) match {
+      attemptBuildCommit(commitID, filename, commitAuthor, commitDate, linesAdded, linesDeleted) match {
         case Some(c) =>
           commitHandler(c)
           resetState()
@@ -85,25 +87,27 @@ class GitHistoryExtractor(repoDir: String) {
     filename = null
     commitAuthor = null
     commitDate = null
-    deltaLineCount = 0
+    linesAdded = 0
+    linesDeleted = 0
   }
 
   def attemptBuildCommit(commitID: String,
                          filename: String,
                          commitAuthor: String,
                          commitDate: DateTime,
-                         deltaLineCount: Int): Option[CommitData] = {
+                         linesAdded: Int,
+                         linesDeleted: Int): Option[CommitData] = {
     if (filename != null && commitID != null && commitAuthor != null && commitDate != null) {
       // println(filename, commitAuthor, commitDate)
       //printStats
-      Some(new CommitData(commitID, filename, commitAuthor, deltaLineCount, commitDate.toDate))
+      Some(new CommitData(commitID, filename, commitAuthor, linesAdded, linesDeleted, commitDate.toDate))
     } else {
       Console.err.println(s"commit $commitID was unterminated!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
       None
     }
   }
 
-  def printStats = {
+  def printStats() = {
     def rt = Runtime.getRuntime
     def usedMB = (rt.totalMemory() - rt.freeMemory()) / 1024 / 1024
     println(s"usage = $usedMB")

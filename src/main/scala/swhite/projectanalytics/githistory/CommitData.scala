@@ -6,8 +6,9 @@ class CommitData(val commitID: String,
                  val filename: String,
                  val authorEmail: String,
                  val linesAdded: Int,
+                 val linesDeleted: Int,
                  val commitDate: Date) {
   override def toString = {
-    commitID + " - " + filename + ": " + authorEmail + ", " + commitDate + ", " + linesAdded
+    commitDate + ": " + commitID + " - " + filename + ": " + authorEmail + ", " + linesAdded + ", " + linesDeleted
   }
 }

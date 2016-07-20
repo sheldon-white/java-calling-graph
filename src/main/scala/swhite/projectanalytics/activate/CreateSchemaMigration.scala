@@ -16,6 +16,21 @@ class CreateSchemaMigration extends Migration {
         _.column[String]("filename"),
         _.column[String]("authorEmail"),
         _.column[Int]("linesAdded"),
+        _.column[Int]("linesDeleted"),
         _.column[Date]("commitDate"))
-  }
+    table[GitCommitRecord]
+      .addIndex("idx_commitDate")("commitDate")
+      .ifNotExists
+    table[GitCommitRecord]
+      .addIndex("idx_authorEmail")("authorEmail")
+      .ifNotExists
+
+    table[LineCountByMonthAndAuthor]
+      .createTable(
+          _.column[String]("authorEmail"),
+          _.column[String]("month"),
+          _.column[Int]("linesAdded"),
+          _.column[Int]("linesDeleted"))
+
+    }
 }
