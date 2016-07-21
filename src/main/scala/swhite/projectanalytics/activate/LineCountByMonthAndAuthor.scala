@@ -1,5 +1,7 @@
 package swhite.projectanalytics.activate
 
+import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
 import swhite.projectanalytics.activate.ProjectContext._
 
 class LineCountByMonthAndAuthor(val id: Int,
@@ -8,8 +10,12 @@ class LineCountByMonthAndAuthor(val id: Int,
                                 val linesAdded: Int,
                                 val linesDeleted: Int) extends EntityWithCustomID[Int] {
 
+  def dateFormatter = DateTimeFormat.forPattern("yyyy-MM")
+  def str2date(str: String): DateTime = dateFormatter.parseDateTime(str)
+
   def toBean = {
-      new LineCountByMonthAndAuthorBean(id, month, authorEmail, linesAdded, linesDeleted)
+    val timestamp = str2date(month).toDate.getTime
+    new RickshawDataPoint(timestamp, linesAdded - linesDeleted)
   }
 }
 

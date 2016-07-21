@@ -98,8 +98,6 @@ class GitHistoryExtractor(repoDir: String) {
                          linesAdded: Int,
                          linesDeleted: Int): Option[CommitData] = {
     if (filename != null && commitID != null && commitAuthor != null && commitDate != null) {
-      // println(filename, commitAuthor, commitDate)
-      //printStats
       Some(new CommitData(commitID, filename, commitAuthor, linesAdded, linesDeleted, commitDate.toDate))
     } else {
       Console.err.println(s"commit $commitID was unterminated!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
