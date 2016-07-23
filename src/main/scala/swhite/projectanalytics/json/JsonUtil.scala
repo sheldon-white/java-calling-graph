@@ -8,7 +8,6 @@ import com.fasterxml.jackson.module.scala.DefaultScalaModule
 object JsonUtil {
   val mapper = new ObjectMapper() with ScalaObjectMapper
   mapper.registerModule(DefaultScalaModule)
-  //mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
   mapper.configure(SerializationFeature.INDENT_OUTPUT, true)
 
   def toJson(value: Map[Symbol, Any]): String = {
