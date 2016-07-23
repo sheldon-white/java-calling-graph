@@ -1,17 +1,17 @@
 <head>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <script src="datasets/lineplot.json"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="datasets/commitsByMonthAndAuthor.js"></script>
 </head>
 
 <body>
 
-<div id="myDiv" style="width: 600px; height: 400px;"><!-- Plotly chart will be drawn inside this DIV --></div>
-<script>
+  <div id="myDiv" style="width: 1200px; height: 800px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+  <script>
     var layout = {
-        title: 'Test',
-        xaxis: {title: 'Date'},
-        yaxis: {title: 'Count'}
+      title: 'Test',
+      xaxis: {title: 'Date'},
+      yaxis: {title: 'Count'}
     };
     Plotly.newPlot('myDiv', data, layout);
-</script>
+  </script>
 </body>
