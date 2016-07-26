@@ -16,7 +16,7 @@ object SelectLineCountByAuthorAndMonth extends App {
     val tmp = commitsByAuthor map {case (authorEmail, commits) =>
       new DataSet(authorEmail, commits.map( x => x.month), commits.map( x => x.linesAdded))}
     import java.io._
-    val pw = new PrintWriter(new File("commitsByMonthAndAuthor.json"))
+    val pw = new PrintWriter(new File("web/datasets/commitsByMonthAndAuthor.js"))
     pw.write("var data = " + JsonUtil.toJson(tmp) + ";")
     pw.close()
   }
