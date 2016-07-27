@@ -6,7 +6,7 @@ object ProjectBuild extends Build {
 	/* Dependencies */
 	val localMavenRepo = "Local Maven Repository" at "file://"+Path.userHome+"/.m2/repository"
 	val fwbrasilRepo = "fwbrasil.net" at "http://fwbrasil.net/maven/"
-
+	val anormCypherRepo = "anormcypher" at "http://repo.anormcypher.org/"
 	val activateVersion = "1.7"
 	val playVersion = "2.4.3"
 	val activateCore = "net.fwbrasil" %% "activate-core" % activateVersion
@@ -36,5 +36,5 @@ object ProjectBuild extends Build {
 				organization := "swhite.projectanalytics",
 				scalaVersion := "2.11.8",
 				version := "1.0",
-				resolvers ++= Seq(localMavenRepo, fwbrasilRepo)))
+				resolvers ++= Seq(localMavenRepo, fwbrasilRepo, anormCypherRepo)))
 }
