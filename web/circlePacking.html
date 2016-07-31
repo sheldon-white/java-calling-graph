@@ -14,26 +14,29 @@
 
 </style>
 
+<input type="range" min="0" max="100" step="1">
 <svg width="960" height="960"><g transform="translate(1,1)"></g></svg>
+<!-- <script src="https://d3js.org/d3.v4.0.0-alpha.35.min.js"></script> -->
 <script src="https://d3js.org/d3.v4.0.0-alpha.35.min.js"></script>
+<script src="https://d3js.org/d3-color.v1.min.js"></script>
+<script src="https://d3js.org/d3-dispatch.v1.min.js"></script>
+<script src="https://d3js.org/d3-ease.v1.min.js"></script>
+<script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+<script src="https://d3js.org/d3-selection.v1.min.js"></script>
+<script src="https://d3js.org/d3-timer.v1.min.js"></script>
+<script src="https://d3js.org/d3-transition.v1.min.js"></script>
 <script src="datasets/directorySizesByMonth.js"></script>
+
 <script>
+    d3.select("input")
+            .on("input", changed)
+            .on("change", changed);
 
-    var svg = d3.select("svg"),
-            width = +svg.attr("width"),
-            height = +svg.attr("height");
+    function changed() {
+        d3.select("svg").selectAll("circle").remove();
+        displayDataset(data[this.value]);
+    }
 
-    var format = d3.format(",d");
-
-    var color = d3.scaleMagma()
-            .domain([-10, 10]);
-
-    var stratify = d3.stratify()
-            .parentId(function(d) { return d.id.substring(0, d.id.lastIndexOf("/")); });
-
-    var pack = d3.pack()
-            .size([width - 2, height - 2])
-            .padding(3);
 
     function hovered(hover) {
         return function(d) {
@@ -41,7 +44,35 @@
         };
     }
 
+    var w = 1280,
+            h = 800,
+            r = 720,
+            x = d3.scaleLinear().range([0, r]),
+            y = d3.scaleLinear().range([0, r]);
+
+    var vis = d3.select("body")
+            .insert("svg:svg", "h2")
+            .attr("width", w)
+            .attr("height", h)
+            .append("svg:g")
+            .attr("transform", "translate(" + (w - r) / 2 + "," + (h - r) / 2 + ")");
+
     var displayDataset = function(dataset) {
+
+        var svg = d3.select("svg"),
+                width = +svg.attr("width"),
+                height = +svg.attr("height");
+
+        var format = d3.format(",d");
+
+        var color = d3.scaleMagma()
+                .domain([-10, 10]);
+
+        var stratify = d3.stratify()
+                .parentId(function(d) { return d.id.substring(0, d.id.lastIndexOf("/")); });
+        var pack = d3.pack()
+                .size([width - 2, height - 2])
+                .padding(3);
         var root = stratify(dataset.sizes)
                 .sum(function (d) {
                     return d.value;
@@ -113,6 +144,33 @@
                 .text(function (d) {
                     return d.id + "\n" + format(d.value);
                 });
+
+        d3.select(window).on("click", function() { zoom(root); });
     };
-    displayDataset(data[70]);
+
+
+    function zoom(d, i) {
+        var k = r / d.r / 2;
+        x.domain([d.x - d.r, d.x + d.r]);
+        y.domain([d.y - d.r, d.y + d.r]);
+
+        var t = vis.transition()
+                .duration(d3.event.altKey ? 7500 : 750);
+
+        t.selectAll("circle")
+                .attr("cx", function(d) { return x(d.x); })
+                .attr("cy", function(d) { return y(d.y); })
+                .attr("r", function(d) { return k * d.r; });
+
+        t.selectAll("text")
+                .attr("x", function(d) { return x(d.x); })
+                .attr("y", function(d) { return y(d.y); })
+                .style("opacity", function(d) { return k * d.r > 20 ? 1 : 0; });
+
+        node = d;
+        d3.event.stopPropagation();
+    }
+
+    displayDataset(data[0]);
+
 </script>

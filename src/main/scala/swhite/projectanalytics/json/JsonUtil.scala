@@ -1,6 +1,6 @@
 package swhite.projectanalytics.json
 
-import com.fasterxml.jackson.databind.{SerializationFeature, DeserializationFeature, ObjectMapper}
+import com.fasterxml.jackson.databind.{SerializationFeature, ObjectMapper}
 import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 
