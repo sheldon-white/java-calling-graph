@@ -81,16 +81,19 @@ object GitVersionToJavaFileSizes {
   def main(args: Array[String]): Unit = {
     val directorySizePattern = "^([0-9]+)\\s+(.+)$".r
     val pwd = new File(".").getAbsolutePath
-    val repo = "/Users/swhite/junk/app-core"
+    val repo = "/Users/swhite/projects/app-core"
     val outputDir = "/Users/swhite/junk"
-    val dateStr = "2016-07-01"
-    val cmd = s"sh $pwd/bin/java-file-sizes-at-date.sh $repo $dateStr $outputDir"
+    //    val dateStr = "2016-07-01"
+    //    val cmd = s"sh $pwd/bin/java-file-sizes-at-date.sh $repo $dateStr $outputDir"
+    //    println(cmd)
+    //    val output = cmd !!
+    //    val lines = output.split("\n")
 
-    println(cmd)
-    val output = cmd !!
-    val lines = output.split("\n")
+    val duOutput = s"find $repo -name *.java" #| "xargs gdu -b" !!
+    val lines = duOutput.split("\n")
+
     val directorySizeSet = lines flatMap {
-      case directorySizePattern(size, id) if !id.startsWith("./.git") => Some(DirectorySize(size.toInt, id))
+      case directorySizePattern(size, id) if !id.contains(".git/") => Some(DirectorySize(size.toInt, id))
       case _ => None
     } toList
     val root = new DirectoryTree("app-core", 0, List())
