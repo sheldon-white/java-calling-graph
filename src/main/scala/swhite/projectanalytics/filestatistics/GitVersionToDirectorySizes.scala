@@ -1,4 +1,4 @@
-package swhite.projectanalytics.processbuilder
+package swhite.projectanalytics.filestatistics
 
 import sys.process._
 import java.io.File

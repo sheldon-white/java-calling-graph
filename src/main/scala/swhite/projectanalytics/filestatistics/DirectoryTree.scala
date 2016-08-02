@@ -1,4 +1,4 @@
-package swhite.projectanalytics.processbuilder
+package swhite.projectanalytics.filestatistics
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import scala.collection.mutable
