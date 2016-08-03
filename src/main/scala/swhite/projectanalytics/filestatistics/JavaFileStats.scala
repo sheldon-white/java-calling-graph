@@ -1,4 +1,4 @@
 package swhite.projectanalytics.filestatistics
 
-case class JavaFileStats(id: String, size: Int, exports: List[String])
+case class JavaFileStats(name: String, size: Int, imports: List[String])
 
