@@ -19,7 +19,7 @@ object GitVersionToDirectorySizes {
     val output = cmd !!
     val lines = output.split("\n")
     val directorySizeSet = lines flatMap {
-      case directorySizePattern(size, id) if !id.startsWith("./.git") => Some(DirectorySize(size.toInt, id))
+      case directorySizePattern(size, id) if !id.startsWith("./.git") => Some(FileSize(id, size.toInt))
       case _ => None
     } toList
     val root = new DirectoryTree("app-core", 0, List())
@@ -52,7 +52,7 @@ object GitVersionToJavaFileSizes {
     val lines = duOutput.split("\n")
 
     val directorySizeSet = lines flatMap {
-      case directorySizePattern(size, id) if !id.contains(".git/") => Some(DirectorySize(size.toInt, id))
+      case directorySizePattern(size, id) if !id.contains(".git/") => Some(FileSize(id, size.toInt))
       case _ => None
     } toList
     val root = new DirectoryTree("app-core", 0, List())

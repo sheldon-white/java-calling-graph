@@ -11,7 +11,7 @@ class FileSizeExtractor {
     lines flatMap {
       case directorySizePattern(size, id)
         if !id.contains(".git/") && id.startsWith(repoDirectory ) =>
-        Some(DirectorySize(size.toInt, id.substring(1 + repoDirectory.length)))
+        Some(FileSize(id.substring(1 + repoDirectory.length), size.toInt))
       case _ => None
     } toList
   }
