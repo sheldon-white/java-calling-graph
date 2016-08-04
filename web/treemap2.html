@@ -20,9 +20,9 @@
 
 </style>
 <body>
-<script src="http://d3js.org/d3.v3.min.js"></script>
-<!-- <script src="datasets/readme-flare-imports.js"></script> -->
-<script src="datasets/javaImports.js"></script>
+<script src="http://d3js.org/d3.v3.js"></script>
+ <!--<script src="datasets/readme-flare-imports.js"></script>-->
+ <script src="datasets/javaImports.js"></script>
 <script>
 
     var width = 960,
@@ -92,8 +92,12 @@
 
             // For each import, construct a link from the source to target node.
             nodes.forEach(function(d) {
-                if (d.imports) d.imports.forEach(function(i) {
-                    imports.push({source: map[d.name], target: map[i]});
+                if (d.imports && d.name) d.imports.forEach(function(i) {
+                    var s = map[d.name];
+                    var t = map[i];
+                    if (s && t) {
+                        imports.push({source: s, target: t});
+                    }
                 });
             });
 
