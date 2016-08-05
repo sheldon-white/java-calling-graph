@@ -3,7 +3,7 @@ package swhite.projectanalytics.filestatistics
 import swhite.projectanalytics.json.JsonUtil
 import sys.process._
 
-class JavaExportsExtractor {
+class JavaImportsExtractor {
   def extractAll(repoDirectory: String, idTransformer: String => String, matchingPatterns: List[String]): List[JavaFileStats] = {
     val grepPattern = "^import\\s([^;]+);$".r
     val builder = new FileSizeExtractor
@@ -24,9 +24,9 @@ class JavaExportsExtractor {
   }
 }
 
-object JavaExportsExtractor {
+object JavaImportsExtractor {
   def main(args: Array[String]): Unit = {
-    val builder = new JavaExportsExtractor
+    val builder = new JavaImportsExtractor
     def idTransformer(s: String) = s.substring(1 + s.indexOf("/com/")).dropRight(".java".length).replaceAll("/", ".")
     val allImports = builder.extractAll("/Users/swhite/junk/app-core/dev2", idTransformer, List("navigo", "smartsheet"))
     val rootJson = JsonUtil.toJson(allImports)
