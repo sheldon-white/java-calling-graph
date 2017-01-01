@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link type="text/css" rel="stylesheet" href="style.css">
-    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="https://d3js.org/d3.v3.js"></script>
     <script src="https://d3js.org/d3-hierarchy.v1.min.js"></script>
     <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
     <script src="../datasets/directorySizes.js"></script>
@@ -70,7 +70,9 @@
     cell.append("svg:rect")
             .attr("width", function(d) { return d.dx - 1; })
             .attr("height", function(d) { return d.dy - 1; })
-            .style("fill", function(d) { return color(d.parent.name); });
+            .style("fill", function(d) {
+                return color(d.parent.name);
+            });
 
     cell.append("svg:text")
             .attr("x", function(d) { return d.dx / 2; })

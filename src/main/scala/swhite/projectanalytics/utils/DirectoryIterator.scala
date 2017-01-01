@@ -25,11 +25,12 @@ object DirectoryIterator {
     }
     val t2 = System.currentTimeMillis()
     println("Sequential " + (t2 - t1) + " (ms)")
-    //Thread.sleep(5000)
+    Thread.sleep(5000)
+    val t3 = System.currentTimeMillis()
     val finder2 = new DirectoryIterator
     finder2.walkTree(dir, isFile).par.foreach(f => println(f.getName(), f.length()))
-    val t3 = System.currentTimeMillis()
-    println("Parallel " + (t3 - t2) + " (ms)")
+    val t4 = System.currentTimeMillis()
+    println("Parallel " + (t4 - t3) + " (ms)")
   }
 }
 

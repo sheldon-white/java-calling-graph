@@ -21,8 +21,8 @@
 </style>
 <body>
 <script src="http://d3js.org/d3.v3.js"></script>
- <!--<script src="datasets/readme-flare-imports.js"></script>-->
- <script src="datasets/javaImports.js"></script>
+<!--<script src="datasets/readme-flare-imports.js"></script>-->
+<script src="datasets/javaImports.js"></script>
 <script>
 
     var width = 960,
@@ -52,8 +52,8 @@
             .x(function(d) { return d.x + d.dx / 2; })
             .y(function(d) { return d.y + d.dy / 2; });
 
-//    d3.json("/mbostock/raw/1044242/readme-flare-imports.json", function(error, classes) {
-//        if (error) throw error;
+    //    d3.json("/mbostock/raw/1044242/readme-flare-imports.json", function(error, classes) {
+    //        if (error) throw error;
 
     var packages = {
         // Lazily construct the package hierarchy from class names.
@@ -106,27 +106,37 @@
     };
 
     var nodes = treemap.nodes(packages.root(classes)),
-                links = packages.imports(nodes);
+            links = packages.imports(nodes);
 
-        div.selectAll(".cell")
-                .data(nodes)
-                .enter().append("div")
-                .attr("class", "cell")
-                .style("background-color", function(d) { return d.children ? fill(d.key) : null; })
-                .call(cell)
-                .text(function(d) { return d.children ? null : d.key; });
+    var svg = d3.select("#body").append("div")
+            .attr("class", "chart")
+            .style("width", w + "px")
+            .style("height", h + "px")
+            .append("svg:svg")
+            .attr("width", w)
+            .attr("height", h)
+            .append("svg:g")
+            .attr("transform", "translate(.5,.5)");
 
-        div.append("svg")
-                .attr("width", width)
-                .attr("height", height)
-                .style("position", "absolute")
-                .selectAll(".link")
-                .data(bundle(links))
-                .enter().append("path")
-                .attr("class", "link")
-                .attr("d", line)
-                .style("stroke", function(d) { return stroke(d[0].value); });
-  //  });
+    div.selectAll(".cell")
+            .data(nodes)
+            .enter().append("div")
+            .attr("class", "cell")
+            .style("background-color", function(d) { return d.children ? fill(d.key) : null; })
+            .call(cell)
+            .text(function(d) { return d.children ? null : d.key; });
+
+    div.append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .style("position", "absolute")
+            .selectAll(".link")
+            .data(bundle(links))
+            .enter().append("path")
+            .attr("class", "link")
+            .attr("d", line)
+            .style("stroke", function(d) { return stroke(d[0].value); });
+    //  });
 
     function cell() {
         this.style("left", function(d) { return d.x + "px"; })
