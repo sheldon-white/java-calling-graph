@@ -1,6 +1,7 @@
 package swhite.projectanalytics.activate
 
 import java.util.Date
+
 import swhite.projectanalytics.githistory.CommitData
 
 class GitCommitRecord(var commitID: String,

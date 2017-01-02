@@ -4,6 +4,7 @@ import java.io.File
 
 import swhite.projectanalytics.activate.GitCommitRecord
 import swhite.projectanalytics.activate.ProjectContext._
+import swhite.projectanalytics.utils.StringMapper
 
 object CollateByAuthorAndDate {
   def commitIt(commitData: CommitData) = {
@@ -17,7 +18,8 @@ object CollateByAuthorAndDate {
 
   def main(args: Array[String]) = {
     val repoDir = "/Users/swhite/projects/app-core/.git"
-    val extractor = new GitHistoryExtractor(repoDir)
+    val authorMapper = new StringMapper("dataCleaning/authorMappings.csv")
+    val extractor = new GitHistoryExtractor(repoDir, authorMapper)
     try {
       extractor.extractCommits(new File("."), false, commitIt)
     } catch {

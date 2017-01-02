@@ -1,8 +1,9 @@
 package swhite.projectanalytics.filestatistics
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import scala.collection.mutable
 import swhite.projectanalytics.json.JsonUtil
+
+import scala.collection.mutable
 
 class DirectoryTree(val name: String, var size: Int, var children: List[DirectoryTree]) {
   @JsonIgnore val childrenByName: mutable.Map[String, DirectoryTree] = children.map(c => c.name -> c)(collection.breakOut)

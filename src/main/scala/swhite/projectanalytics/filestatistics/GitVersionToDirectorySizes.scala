@@ -1,10 +1,10 @@
 package swhite.projectanalytics.filestatistics
 
-import sys.process._
 import java.io.File
-import scala.collection.mutable
+
 import swhite.projectanalytics.json.JsonUtil
-import com.fasterxml.jackson.annotation.JsonIgnore
+
+import scala.sys.process._
 
 object GitVersionToDirectorySizes {
   def main(args: Array[String]): Unit = {

@@ -1,16 +1,12 @@
 package swhite.projectanalytics.githistory
 
 import java.io.File
-import java.util.Date
-import java.util.concurrent.atomic._
 
 import swhite.projectanalytics.activate.GitCommitRecord
 import swhite.projectanalytics.activate.ProjectContext._
-import swhite.projectanalytics.utils.DirectoryIterator
+import swhite.projectanalytics.utils.StringMapper
 
-import scala.collection.parallel._
-
-object ExtractHistoryFromRepository {
+object ExtractHistoryFromRepoApp {
   def commitIt(commitData: CommitData) = {
     val transaction = new Transaction
     transactional(transaction) {
@@ -22,7 +18,8 @@ object ExtractHistoryFromRepository {
 
   def main(args: Array[String]) = {
     val repoDir = "/Users/swhite/projects/app-core/.git"
-    val extractor = new GitHistoryExtractor(repoDir)
+    val authorMapper = new StringMapper("dataCleaning/authorMappings.csv")
+    val extractor = new GitHistoryExtractor(repoDir, authorMapper)
     try {
       extractor.extractCommits(new File("."), false, commitIt)
     } catch {

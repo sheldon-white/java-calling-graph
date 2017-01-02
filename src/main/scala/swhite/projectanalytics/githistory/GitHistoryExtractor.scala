@@ -3,12 +3,14 @@ package swhite.projectanalytics.githistory
 import java.io.File
 import java.nio.file.Paths
 
-import scala.sys.process._
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
-import scala.language.implicitConversions
+import swhite.projectanalytics.utils.StringMapper
 
-class GitHistoryExtractor(repoDir: String) {
+import scala.language.implicitConversions
+import scala.sys.process._
+
+class GitHistoryExtractor(repoDir: String, private val authorMapper: StringMapper) {
   val git = "which git".!!.trim
   var filename: String = null
   var commitAuthor: String = null
@@ -57,7 +59,7 @@ class GitHistoryExtractor(repoDir: String) {
             linesDeleted = 0
 
           case GitHistoryExtractor.authorPattern(author) =>
-            commitAuthor = author
+            commitAuthor = authorMapper.mapString(author.toLowerCase)
 
           case GitHistoryExtractor.datePattern(dateStr) =>
             commitDate = dateStr
@@ -122,8 +124,9 @@ object GitHistoryExtractor {
   def main(args: Array[String]) = {
     val t1 = System.currentTimeMillis
     val repoDir = "/Users/swhite/projects/app-core/.git"
+    val authorMapper = new StringMapper("dataCleaning/authorMappings.csv")
     val commitHandler: CommitData => Unit = println
-    val extractor = new GitHistoryExtractor(repoDir)
+    val extractor = new GitHistoryExtractor(repoDir, authorMapper)
     extractor.extractCommits(new File("dev2/src/com/navigo/smartsheet/sys/flow"), true, commitHandler)
     val t2 = System.currentTimeMillis
     println(s"elapsed time = ${t2 - t1} milliseconds")

@@ -1,7 +1,7 @@
 package swhite.javacallinggraph
 
-import java.io.File
-import java.io.FileInputStream
+import java.io.{File, FileInputStream}
+
 import org.apache.bcel.classfile.ClassParser
 
 import scala.sys.process._

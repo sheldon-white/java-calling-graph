@@ -1,6 +1,6 @@
 package swhite.projectanalytics.filestatistics
 
-import sys.process._
+import scala.sys.process._
 
 class FileSizeExtractor {
   def extractAll(repoDirectory: String, duTest: String) = {

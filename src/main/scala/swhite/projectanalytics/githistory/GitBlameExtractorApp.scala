@@ -1,10 +1,13 @@
 package swhite.projectanalytics.githistory
 
 import java.io._
-import swhite.projectanalytics.json.JsonUtil
-import swhite.projectanalytics.utils.DirectoryIterator
 
-object ExtractBlameApp {
+import swhite.projectanalytics.json.JsonUtil
+import swhite.projectanalytics.utils.{DirectoryIterator, StringMapper}
+
+class GitBlameExtractorApp {}
+
+object GitBlameExtractorApp {
   def isSuitableFile(file: File): Boolean = {
     file match {
       case f if !f.isFile => false
@@ -24,10 +27,10 @@ object ExtractBlameApp {
 
   def main(args: Array[String]) = {
     val dir = "/Users/swhite/projects/app-core"
-    val extractor = new GitBlameExtractor(dir)
+    val authorMapper = new StringMapper("dataCleaning/authorMappings.csv")
+    val extractor = new GitBlameExtractor(dir, authorMapper)
     val finder = new DirectoryIterator
     val fileStream = finder.walkTree(new File(dir), isSuitableFile)
-    val allFileStats = collection.mutable.ListBuffer[BlameStatistics]()
 
     for (f <- fileStream) {
       extractor.extractBlame(f) match {

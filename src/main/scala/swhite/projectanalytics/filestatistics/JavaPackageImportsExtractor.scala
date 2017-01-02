@@ -1,8 +1,9 @@
 package swhite.projectanalytics.filestatistics
 
 import swhite.projectanalytics.json.JsonUtil
-import sys.process._
+
 import scala.collection.mutable
+import scala.sys.process._
 
 class JavaPackageImportsExtractor {
   def extractAll(repoDirectory: String, idTransformer: String => String, matchingPatterns: List[String]): List[JavaFileStats] = {

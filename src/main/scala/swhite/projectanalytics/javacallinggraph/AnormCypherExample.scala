@@ -1,7 +1,7 @@
 package swhite.javacallinggraph
 
-import play.api.libs.ws._
 import org.anormcypher._
+import play.api.libs.ws._
 
 object AnormCypherExample {
   def main(args: Array[String]): Unit = {

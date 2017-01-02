@@ -1,9 +1,10 @@
 package swhite.projectanalytics.activate
 
-import swhite.projectanalytics.githistory.CommitData
-import swhite.projectanalytics.activate.ProjectContext._
-import net.fwbrasil.radon.transaction.Transaction
 import java.util.Date
+
+import net.fwbrasil.radon.transaction.Transaction
+import swhite.projectanalytics.activate.ProjectContext._
+import swhite.projectanalytics.githistory.CommitData
 
 
 object CommitTest extends App {

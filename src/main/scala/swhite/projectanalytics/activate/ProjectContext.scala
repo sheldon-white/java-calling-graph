@@ -11,7 +11,7 @@ object ProjectContext extends ActivateContext {
     val jdbcDriver = "com.mysql.jdbc.Driver"
     val user = Some("swhite")
     val password = Some("swhite")
-    val url = "jdbc:mysql://192.168.99.100:32773/test"
+    val url = "jdbc:mysql://127.0.0.1/test"
     val dialect = mySqlDialect
   }
 }
