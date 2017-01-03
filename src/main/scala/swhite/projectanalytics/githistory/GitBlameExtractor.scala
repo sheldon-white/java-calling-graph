@@ -42,7 +42,7 @@ object GitBlameExtractor {
 
   def main(args: Array[String]): Unit = {
     val t1 = System.currentTimeMillis
-    val repoDir = "/Users/swhite/projects/app-core"
+    val repoDir = "/Users/swhite/projects/project-analytics"
     val authorMapper = new StringMapper("dataCleaning/authorMappings.csv")
     val extractor = new GitBlameExtractor(repoDir, authorMapper)
     val blameStatistics = extractor.extractBlame(new File("dev2/web/opscon/jsx/app.jsx"))

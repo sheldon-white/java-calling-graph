@@ -6,7 +6,7 @@ class FileSizeTreeBuilder {
   def build(repoDirectory: String, duTest: String): DirectoryTree = {
     val extractor = new FileSizeExtractor()
     val directorySizeSet =  extractor.extractAll(repoDirectory, duTest)
-    val root = new DirectoryTree("app-core", 0, List())
+    val root = new DirectoryTree("project-analytics", 0, List())
     for (cd <- directorySizeSet) {
       root.addChild(cd.id, cd.size)
     }
@@ -17,7 +17,7 @@ class FileSizeTreeBuilder {
 object FileSizeTreeBuilder {
   def main(args: Array[String]): Unit = {
     val builder = new FileSizeTreeBuilder
-    val root = builder.build("/Users/swhite/junk/app-core", "-name *.java")
+    val root = builder.build("/Users/swhite/projects/project-analytics", "-name *.scala")
     val rootJson = JsonUtil.toJson(root)
     print(rootJson)
     import java.io._

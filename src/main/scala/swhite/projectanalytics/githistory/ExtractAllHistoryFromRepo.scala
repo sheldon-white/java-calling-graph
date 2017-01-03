@@ -6,7 +6,9 @@ import swhite.projectanalytics.activate.GitCommitRecord
 import swhite.projectanalytics.activate.ProjectContext._
 import swhite.projectanalytics.utils.StringMapper
 
-object ExtractHistoryFromRepoApp {
+class ExtractAllHistoryFromRepo {}
+
+object ExtractAllHistoryFromRepo {
   def commitIt(commitData: CommitData) = {
     val transaction = new Transaction
     transactional(transaction) {
@@ -17,7 +19,7 @@ object ExtractHistoryFromRepoApp {
   }
 
   def main(args: Array[String]) = {
-    val repoDir = "/Users/swhite/projects/app-core/.git"
+    val repoDir = args(0)
     val authorMapper = new StringMapper("dataCleaning/authorMappings.csv")
     val extractor = new GitHistoryExtractor(repoDir, authorMapper)
     try {

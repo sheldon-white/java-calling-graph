@@ -36,9 +36,9 @@ object ClassFileDisassembler {
   val invokeStaticPattern = ".+invokestatic.+Method ([^\\.]+\\.)?([^:]+).+".r
 
   def main(args: Array[String]) = {
-    val classfile = new File("/Users/swhite/projects/app-core/dev2/target/test-classes/com/navigo/unittest/UserAutoProvisioningTest.class")
+    val classfile = new File(args(0))
     val disassembler = new ClassFileDisassembler()
     val classProfile = disassembler.extractMetadata(classfile)
-    //println(classProfile.packageName, classProfile.className)
+    println(classProfile.packageName, classProfile.className)
   }
 }

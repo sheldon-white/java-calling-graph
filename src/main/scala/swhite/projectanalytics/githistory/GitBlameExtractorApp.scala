@@ -26,7 +26,7 @@ object GitBlameExtractorApp {
   }
 
   def main(args: Array[String]) = {
-    val dir = "/Users/swhite/projects/app-core"
+    val dir = args(0)
     val authorMapper = new StringMapper("dataCleaning/authorMappings.csv")
     val extractor = new GitBlameExtractor(dir, authorMapper)
     val finder = new DirectoryIterator

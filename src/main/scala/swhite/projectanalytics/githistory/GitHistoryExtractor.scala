@@ -123,7 +123,7 @@ object GitHistoryExtractor {
 
   def main(args: Array[String]) = {
     val t1 = System.currentTimeMillis
-    val repoDir = "/Users/swhite/projects/app-core/.git"
+    val repoDir = "/Users/swhite/projects/project-analytics/.git"
     val authorMapper = new StringMapper("dataCleaning/authorMappings.csv")
     val commitHandler: CommitData => Unit = println
     val extractor = new GitHistoryExtractor(repoDir, authorMapper)

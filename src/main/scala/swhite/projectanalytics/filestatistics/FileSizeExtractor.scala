@@ -20,6 +20,6 @@ class FileSizeExtractor {
 object FileSizeExtractor {
   def main(args: Array[String]): Unit = {
     val builder = new FileSizeExtractor
-    builder.extractAll("/Users/swhite/junk/app-core", "-name *.java") foreach println
+    builder.extractAll("/Users/swhite/projects/project-analytics", "-name *.scala") foreach println
   }
 }

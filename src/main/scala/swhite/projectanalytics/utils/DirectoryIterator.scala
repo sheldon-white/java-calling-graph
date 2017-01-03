@@ -17,7 +17,7 @@ class DirectoryIterator {
 object DirectoryIterator {
   def main(args: Array[String]) = {
     def isFile(file: File) = file.isFile
-    val dir = new File("/Users/swhite/projects/app-core")
+    val dir = new File("project-analytics")
     val finder = new DirectoryIterator
     val t1 = System.currentTimeMillis()
     for (f <- finder.walkTree(dir, isFile)) {

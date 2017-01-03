@@ -10,13 +10,13 @@ object CallingGraphApp1 {
   }
 
   def main(args: Array[String]) = {
-    val dir = new File("/Users/swhite/projects/app-core/dev2")
+    val dir = args(0)
     val disassembler = new ClassFileDisassembler
     val dao = new Neo4JDAO
     dao.deleteEverything
 
     val finder = new DirectoryIterator
-    val classStream = finder.walkTree(dir, isClassFile).map(disassembler.extractMetadata)
+    val classStream = finder.walkTree(new File(dir), isClassFile).map(disassembler.extractMetadata)
 
     println("CS = " + classStream.getClass)
 
