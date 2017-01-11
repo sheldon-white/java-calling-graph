@@ -48,16 +48,16 @@
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    d3.tsv("flowers.tsv", function(error, data) {
+    d3.json("pruned2.json", function(error, data) {
         if (error) throw error;
 
         data.forEach(function(d) {
-            d.sepalLength = +d.sepalLength;
-            d.sepalWidth = +d.sepalWidth;
+            d.aggregate.sloc.logical = +d.aggregate.sloc.logical;
+            d.aggregate.cyclomatic = +d.aggregate.cyclomatic;
         });
 
-        x.domain(d3.extent(data, function(d) { return d.sepalWidth; })).nice();
-        y.domain(d3.extent(data, function(d) { return d.sepalLength; })).nice();
+        x.domain(d3.extent(data, function(d) { return d.aggregate.sloc.logical; })).nice();
+        y.domain(d3.extent(data, function(d) { return d.aggregate.cyclomatic; })).nice();
 
         svg.append("g")
             .attr("class", "x axis")
@@ -68,7 +68,7 @@
             .attr("x", width)
             .attr("y", -6)
             .style("text-anchor", "end")
-            .text("Sepal Width (cm)");
+            .text("File Size (loc)");
 
         svg.append("g")
             .attr("class", "y axis")
@@ -79,35 +79,35 @@
             .attr("y", 6)
             .attr("dy", ".71em")
             .style("text-anchor", "end")
-            .text("Sepal Length (cm)")
+            .text("Cyclomatic Complexity")
 
         svg.selectAll(".dot")
             .data(data)
             .enter().append("circle")
             .attr("class", "dot")
             .attr("r", 3.5)
-            .attr("cx", function(d) { return x(d.sepalWidth); })
-            .attr("cy", function(d) { return y(d.sepalLength); })
-            .style("fill", function(d) { return color(d.species); });
+            .attr("cx", function(d) { return x(d.aggregate.sloc.logical); })
+            .attr("cy", function(d) { return y(d.aggregate.cyclomatic); })
+            .style("fill", function(d) { return "black"; });
 
-        var legend = svg.selectAll(".legend")
-            .data(color.domain())
-            .enter().append("g")
-            .attr("class", "legend")
-            .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
-
-        legend.append("rect")
-            .attr("x", width - 18)
-            .attr("width", 18)
-            .attr("height", 18)
-            .style("fill", color);
-
-        legend.append("text")
-            .attr("x", width - 24)
-            .attr("y", 9)
-            .attr("dy", ".35em")
-            .style("text-anchor", "end")
-            .text(function(d) { return d; });
+//        var legend = svg.selectAll(".legend")
+//            .data(color.domain())
+//            .enter().append("g")
+//            .attr("class", "legend")
+//            .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+//
+//        legend.append("rect")
+//            .attr("x", width - 18)
+//            .attr("width", 18)
+//            .attr("height", 18)
+//            .style("fill", color);
+//
+//        legend.append("text")
+//            .attr("x", width - 24)
+//            .attr("y", 9)
+//            .attr("dy", ".35em")
+//            .style("text-anchor", "end")
+//            .text(function(d) { return d; });
 
     });
 

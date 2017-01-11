@@ -65,7 +65,7 @@
         .attr("class", "tooltip")
         .style("opacity", 0);
 
-    d3.json("../datasets/blameByFile.json", function(error, paths) {
+    d3.json("datasets/blameByFile.json", function(error, paths) {
         if (error) throw error;
 
         var results = directories.root(paths);
