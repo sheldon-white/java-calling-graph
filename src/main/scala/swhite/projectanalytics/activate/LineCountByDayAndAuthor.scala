@@ -13,10 +13,10 @@ class LineCountByDayAndAuthor(val id: Int,
   def dateFormatter = DateTimeFormat.forPattern("yyyy-MM-dd")
   def str2date(str: String): DateTime = dateFormatter.parseDateTime(str)
 
-  def toBean = {
-    val timestamp = str2date(day).toDate.getTime / 1000
-    new GraphPoint(timestamp, linesAdded)
-  }
+//  def toBean = {
+//    val timestamp = str2date(day).toDate.getTime / 1000
+//    new GraphPoint(timestamp, linesAdded)
+//  }
 }
 
 object LineCountByDayAndAuthor {

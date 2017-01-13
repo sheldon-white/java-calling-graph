@@ -16,8 +16,10 @@ object SelectLineCountByAuthorAndDay extends App {
     }.groupBy(gcr => gcr.day)
 
     val tmp = commitsByAuthor map {
-      case (day, commits) =>
-      new DataSet(day, commits.map(c => new CommitData(c.commitID, c.authorEmail, c.linesAdded)))
+      case (day, commits) => {
+        val chopped = day.split(" ")(0) // cheesy, I know
+        new DataSet(chopped, commits.map(c => new CommitData(c.commitID, c.authorEmail, c.linesAdded)))
+      }
     }
 
     val pw = new PrintWriter(new File("web/datasets/commitsByDayAndAuthor.json"))

@@ -43,7 +43,7 @@
         format = d3.time.format("%Y-%m-%d");
 
     var svg = d3.select("body").selectAll("svg")
-        .data(d3.range(1990, 2011))
+        .data(d3.range(2007, 2018))
         .enter().append("svg")
         .attr("width", width)
         .attr("height", height)
@@ -75,39 +75,69 @@
         .attr("class", "month")
         .attr("d", monthPath);
 
-    d3.csv("../datasets/dji.csv", function(error, csv) {
+    d3.json("../datasets/commitsByDayAndAuthor.json", function(error, commitData) {
         if (error) throw error;
+        var minLinesAdded = null;
+        var maxLinesAdded = null;
 
         var data = d3.nest()
-            .key(function(d) { return d.Date; })
-            .rollup(function(d) { return (d[0].Close - d[0].Open) / d[0].Open; })
-            .map(csv);
+            .key(function(d) { return d.day; })
+            .rollup(function(d) {
+                var sum = 0;
+                for (var i = 0; i < d[0].commits.length; i++) {
+                    sum += d[0].commits[i].linesAdded;
+                }
+                if (minLinesAdded == null || sum < minLinesAdded) {
+                    minLinesAdded = sum;
+                }
+                if (maxLinesAdded == null || sum > maxLinesAdded) {
+                    maxLinesAdded = sum;
+                }
+                d[0].sum = sum;
+                return d[0];
+            } )
+            .map(commitData);
 
         var color = d3.scale.quantize()
-            .domain([-.05, .05])
+            .domain([-.5, .5])
             .range(d3.range(11).map(function(d) {
                 return "q" + d + "-11";
             }));
 
         rect.filter(function(d) { return d in data; })
             .attr("class", function(d) {
-                var c = color(data[d]);
-                return "day " + c;
+                return "day " + getColor(color, data[d].sum / (maxLinesAdded - minLinesAdded));
             })
             .select("title")
-            .text(function(d) { return d + ": " + percent(data[d]); });
+            .text(function(d) { return tooltipInfo(d, data[d]) });
     });
+
+    function tooltipInfo(day, data) {
+        var tooltipHtml = '<b><u>' + day + '</b></u><br><table>';
+        for (var i = 0; i < data.commits.length; i++) {
+            var c = data.commits[i];
+            var tr = '<tr><td>' + c.authorEmail + '</td><td>' + c.commitID + '</td><td>' + c.linesAdded + '</td></tr>';
+            tooltipHtml += tr;
+        }
+        tooltipHtml += '</table>';
+
+        return tooltipHtml;
+    }
+
+    function getColor(color, d) {
+        var c = color(d)
+        return c;
+    }
 
     function monthPath(t0) {
         var t1 = new Date(t0.getFullYear(), t0.getMonth() + 1, 0),
             d0 = t0.getDay(), w0 = d3.time.weekOfYear(t0),
             d1 = t1.getDay(), w1 = d3.time.weekOfYear(t1);
-        var mp = "M" + (w0 + 1) * cellSize + "," + d0 * cellSize
+        return "M" + (w0 + 1) * cellSize + "," + d0 * cellSize
             + "H" + w0 * cellSize + "V" + 7 * cellSize
             + "H" + w1 * cellSize + "V" + (d1 + 1) * cellSize
             + "H" + (w1 + 1) * cellSize + "V" + 0
             + "H" + (w0 + 1) * cellSize + "Z";
-        return mp;
     }
 
 </script>
