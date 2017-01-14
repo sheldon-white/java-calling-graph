@@ -7,6 +7,19 @@
         shape-rendering: crispEdges;
     }
 
+    .tooltip {
+        position: absolute;
+        text-align: center;
+        /*width: 60px; */
+        /*height: 28px;*/
+        padding: 2px;
+        font: 12px sans-serif;
+        background: lightsteelblue;
+        border: 0px;
+        border-radius: 8px;
+        /*  pointer-events: none;	This line needs to be removed */
+    }
+
     .day {
         fill: #fff;
         stroke: #ccc;
@@ -32,54 +45,19 @@
 
 </style>
 <body>
-<script src="//d3js.org/d3.v3.min.js"></script>
+<script src="//localhost:8080/web/js/d3.v3.js"></script>
 <script>
 
     var width = 960,
         height = 136,
         cellSize = 17; // cell size
 
-    var percent = d3.format(".1%"),
-        format = d3.time.format("%Y-%m-%d");
-
-    var svg = d3.select("body").selectAll("svg")
-        .data(d3.range(2007, 2018))
-        .enter().append("svg")
-        .attr("width", width)
-        .attr("height", height)
-        .attr("class", "RdYlGn")
-        .append("g")
-        .attr("transform", "translate(" + ((width - cellSize * 53) / 2) + "," + (height - cellSize * 7 - 1) + ")");
-
-    svg.append("text")
-        .attr("transform", "translate(-6," + cellSize * 3.5 + ")rotate(-90)")
-        .style("text-anchor", "middle")
-        .text(function(d) { return d; });
-
-    var rect = svg.selectAll(".day")
-        .data(function(d) { return d3.time.days(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
-        .enter().append("rect")
-        .attr("class", "day")
-        .attr("width", cellSize)
-        .attr("height", cellSize)
-        .attr("x", function(d) { return d3.time.weekOfYear(d) * cellSize; })
-        .attr("y", function(d) { return d.getDay() * cellSize; })
-        .datum(format);
-
-    rect.append("title")
-        .text(function(d) { return d; });
-
-    svg.selectAll(".month")
-        .data(function(d) { return d3.time.months(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
-        .enter().append("path")
-        .attr("class", "month")
-        .attr("d", monthPath);
-
     d3.json("../datasets/commitsByDayAndAuthor.json", function(error, commitData) {
         if (error) throw error;
+
         var minLinesAdded = null;
         var maxLinesAdded = null;
-
+        var format = d3.time.format("%Y-%m-%d");
         var data = d3.nest()
             .key(function(d) { return d.day; })
             .rollup(function(d) {
@@ -104,23 +82,79 @@
                 return "q" + d + "-11";
             }));
 
+        var div = d3.select("body")
+            .append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
+
+        var svg = d3.select("body").selectAll("svg")
+            .data(d3.range(2007, 2018))
+            .enter().append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .attr("class", "RdYlGn")
+            .append("g")
+            .attr("transform", "translate(" + ((width - cellSize * 53) / 2) + "," + (height - cellSize * 7 - 1) + ")");
+
+
+        svg.append("text")
+            .attr("transform", "translate(-6," + cellSize * 3.5 + ")rotate(-90)")
+            .style("text-anchor", "middle")
+            .text(function(d) { return d; });
+
+        var rect = svg.selectAll(".day")
+            .data(function(d) { return d3.time.days(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+            .enter().append("rect")
+            .attr("class", "day")
+            .attr("width", cellSize)
+            .attr("height", cellSize)
+            .attr("x", function(d) { return d3.time.weekOfYear(d) * cellSize; })
+            .attr("y", function(d) { return d.getDay() * cellSize; })
+            .on("mouseover", function(d) {
+                var node = data[d];
+                div.transition()
+                    .delay(500)
+                    .duration(500)
+                    .style("opacity", 0);
+                div.transition()
+                    .delay(500)
+                    .duration(500)
+                    .style("opacity", .9);
+                div	.html(tooltipInfo(d, node))
+                    .style("left", (d3.event.pageX) + "px")
+                    .style("top", (d3.event.pageY - 28) + "px");
+            })
+            .on('mouseout', function () {
+                div.interrupt().transition();
+                div.style('opacity', 0);
+            })
+            .datum(format);
+
+        svg.selectAll(".month")
+            .data(function(d) { return d3.time.months(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+            .enter().append("path")
+            .attr("class", "month")
+            .attr("d", monthPath);
+
         rect.filter(function(d) { return d in data; })
             .attr("class", function(d) {
                 return "day " + getColor(color, data[d].sum / (maxLinesAdded - minLinesAdded));
             })
-            .select("title")
-            .text(function(d) { return tooltipInfo(d, data[d]) });
     });
 
-    function tooltipInfo(day, data) {
-        var tooltipHtml = '<b><u>' + day + '</b></u><br><table>';
-        for (var i = 0; i < data.commits.length; i++) {
-            var c = data.commits[i];
-            var tr = '<tr><td>' + c.authorEmail + '</td><td>' + c.commitID + '</td><td>' + c.linesAdded + '</td></tr>';
-            tooltipHtml += tr;
+    function tooltipInfo(day, node) {
+        var tooltipHtml = '';
+        if (node) {
+            tooltipHtml = '<b><u>' + day + '</b></u><br><table>';
+            for (var i = 0; i < node.commits.length; i++) {
+                var c = node.commits[i];
+                var tr = '<tr><td>' + c.authorEmail + '</td><td>' + c.commitID + '</td><td>' + c.linesAdded + '</td></tr>';
+                tooltipHtml += tr;
+            }
+            tooltipHtml += '</table>';
+        } else {
+            tooltipHtml = '<b><u>' + day + ': No commits</b></u>';
         }
-        tooltipHtml += '</table>';
-
         return tooltipHtml;
     }
 
